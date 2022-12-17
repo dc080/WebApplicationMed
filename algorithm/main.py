@@ -77,10 +77,13 @@ class Analysis(object):
         pl.xlabel('log $\\ delta$')
         pl.ylabel('log N')
         plt.savefig(os.path.join(path, 'graf.png'), dpi = 500) # Создание картинки graf.png (Нужен ли другой формат?)
-        print('Значение фрактальной размерности', round(-Polyfit[0], 3), '\n') # Упаковать в string и возвращать как результат функции???
+        #print('Значение фрактальной размерности', round(-Polyfit[0], 3), '\n') # Упаковать в string и возвращать как результат функции???
         with open("test.txt", "a") as obj_file: # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
             print(name, " - ", round(-Polyfit[0], 3), "\n", file=obj_file)
-        pass
+        return 'Значение фрактальной размерности ' + str(round(-Polyfit[0], 3)) + '\n' # Упаковка в String и вывод
+
+    #pass
+
 
     def SquareNLinesAnalysis(self, pic, light, dark):
         img = ImageLoad()
@@ -88,9 +91,10 @@ class Analysis(object):
         img.dark_b = dark
         img.light_b = light
         img.findCanny()
-        print('Общая площадь: ', img.ploshad)
-        print('Массив:\n', str(img.area_arr))
-        pass
+        #print('Общая площадь: ', img.ploshad)
+        #print('Массив:\n', str(img.area_arr))
+        return 'Общая площадь: ' + str(img.ploshad) + '\n' + 'Массив:\n' + str(img.area_arr)
+        #pass
         #return 0;
 
 if __name__ == '__main__':
