@@ -80,11 +80,15 @@ class ImageLoad:
             cv2.drawContours(contour_image, [c], 0, (150, 50, 10), 1)
             if area != 0:
                 #cm_ar = (area / 1428.46202)/40
-                cm_ar = (area / 37.938105)/40
-                self.ploshad+=cm_ar
-                cm_ar = str(cm_ar)
-                cm_ar += "см^2/" + str(area) + "px\n"
-                self.area_arr.append(cm_ar)
+                #cm_ar = (area / 37.938105)/40
+                self.ploshad+= area #cm_ar
+                #cm_ar = str(cm_ar)
+
+                str_area = str(area) + "px" #Перевел все только в пиксели
+                self.area_arr.append(str_area) #Заношу в массив
+
+                #cm_ar += "см^2/" + str(area) + "px\n"
+                #self.area_arr.append(cm_ar)
                 #print((area / 37.938105)/40 , "см^2/", area, "px")
 
         cv2.fillPoly(contour_image, cnts, color=((150, 50, 10)))
@@ -93,7 +97,7 @@ class ImageLoad:
         if k == 27:
             cv2.destroyAllWindows()
         cv2.imwrite(os.path.join('','tempimg.jpg'), contour_image)
-        return(self.ploshad)
+        return(self.ploshad) # Возвращает итоговое значение площади
 
 
 
