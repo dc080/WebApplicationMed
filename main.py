@@ -1,25 +1,27 @@
-import os
 import cv2 as cv
 import fire
 import numpy as np
 import pylab as pl
+import os
 from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
-#from core import *
-from core import ImageLoad
 
+# from core import *
+from core import ImageLoad
+pic = Pict.pic
 
 class Analysis(object):
+
 
     def FractAnalysis(self, pic):
         name = os.path.basename(pic)
         path = os.path.dirname(pic)
-
         img = cv.imread(pic, cv.IMREAD_UNCHANGED)  # читаем
 
         img = cv.medianBlur(img, 5)  # размытие
         img_grey = cv.cvtColor(img, cv.COLOR_BGR2GRAY)  # в серый
-        th3 = cv.adaptiveThreshold(img_grey, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 5, 10)  # адаптивный порог цвета
+        th3 = cv.adaptiveThreshold(img_grey, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 5,
+                                   10)  # адаптивный порог цвета
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (1, 1))
         closed = cv.morphologyEx(th3, cv.MORPH_OPEN, kernel)
         closed = cv.erode(closed, None, iterations=1)
@@ -31,8 +33,8 @@ class Analysis(object):
         img = Image.open(os.path.join(path, 'contours.jpg'))  # делаем реверс цвета
         inverted_image = ImageOps.invert(img)
         inverted_image = inverted_image.convert('1')
-        inverted_image.save('img.png') # Сохраняется изображение img.png в папку, откуда был запущен код
-        image = pl.imread('img.png')  #читаем изображение, создаем массив
+        inverted_image.save('img.png')  # Сохраняется изображение img.png в папку, откуда был запущен код
+        image = pl.imread('img.png')  # читаем изображение, создаем массив
         ax = plt.gca()  # оси
 
         # #############################  Шаг 2: Создание списка масштабов
@@ -67,8 +69,8 @@ class Analysis(object):
 
         # ############################## Шаг 4: Нахождение box dimension
         Polyfit = np.polyfit(np.log(scales), np.log(N), 1)
-        #print('Соответствующий многочлен от N равен:', Polyfit[0], 'x + ', Polyfit[1], '\n') # Я так понимаю, это была отладочная информация
-        #print('Следовательно, box dimension равен ', round(-Polyfit[0], 3), '.\n')
+        # print('Соответствующий многочлен от N равен:', Polyfit[0], 'x + ', Polyfit[1], '\n') # Я так понимаю, это была отладочная информация
+        # print('Следовательно, box dimension равен ', round(-Polyfit[0], 3), '.\n')
 
         # ############################## Шаг 5: График линейной регрессии
         plt.clf()
@@ -76,14 +78,16 @@ class Analysis(object):
         pl.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
         pl.xlabel('log $\\ delta$')
         pl.ylabel('log N')
-        plt.savefig(os.path.join(path, 'graf.png'), dpi = 500) # Создание картинки graf.png (Нужен ли другой формат?)
-        #print('Значение фрактальной размерности', round(-Polyfit[0], 3), '\n') # Упаковать в string и возвращать как результат функции???
-        with open("test.txt", "a") as obj_file: # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
+        plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png (Нужен ли другой формат?)
+        # print('Значение фрактальной размерности', round(-Polyfit[0], 3), '\n') # Упаковать в string и возвращать как результат функции???
+        with open("test.txt",
+                  "a") as obj_file:  # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
             print(name, " - ", round(-Polyfit[0], 3), "\n", file=obj_file)
-        return 'Значение фрактальной размерности ' + str(round(-Polyfit[0], 3)) + '\n' # Упаковка в String и вывод
+        return 'Значение фрактальной размерности ' + str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод
 
-    #pass
 
+
+    # pass
 
     def SquareNLinesAnalysis(self, pic, light, dark):
         img = ImageLoad()
@@ -91,11 +95,12 @@ class Analysis(object):
         img.dark_b = dark
         img.light_b = light
         img.findCanny()
-        #print('Общая площадь: ', img.ploshad)
-        #print('Массив:\n', str(img.area_arr))
+        # print('Общая площадь: ', img.ploshad)
+        # print('Массив:\n', str(img.area_arr))
         return 'Общая площадь: ' + str(img.ploshad) + '\n' + 'Массив:\n' + str(img.area_arr)
-        #pass
-        #return 0;
+        # pass
+        # return 0;
+
 
 if __name__ == '__main__':
     fire.Fire(Analysis)
