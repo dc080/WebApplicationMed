@@ -6,16 +6,16 @@ import os
 import main
 from main import Analysis
 
-UPLOAD_FOLDER = 'styles/image'
+UPLOAD_FOLDER = 'static/image'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///med.db'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
-
-pic = 'styles/image/pic.png'
-
+uploaded_image = 'pic.png'
+pic = UPLOAD_FOLDER+'/'+uploaded_image
+#pic = 'static/image/pic.png'
 light = 200
 dark = 150
 
@@ -30,14 +30,15 @@ answer = Analysis()
 #   picture = db.Columd(db.Integer)
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return answer.SquareNLinesAnalysis(pic, light, dark) + answer.FractAnalysis(pic)
-    #if request.method == 'POST':
-      #  file = request.files['file']
-        #filename = secure_filename(file.filename)
-      #  file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-     #   return render_template("index.html", uploaded_image=file.filename)
-    #else:
-     #   return render_template("index.html")
+    #return render_template('index.html', Res=answer.FractAnalysis(pic))  # answer.SquareNLinesAnalysis(pic, light, dark) +
+    if request.method == 'POST':
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        uploaded_image = file.filename
+        return render_template("index.html", uploaded_image=file.filename, Res=answer.FractAnalysis(pic))
+    else:
+        return render_template("index.html")
 
 
 

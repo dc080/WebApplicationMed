@@ -6,9 +6,14 @@ import os
 from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
 
+
 # from core import *
 from core import ImageLoad
-pic = Pict.pic
+
+UPLOAD_FOLDER = 'static/image'
+uploaded_image = 'pic.png'
+pic = UPLOAD_FOLDER+'/'+uploaded_image
+#pic = 'static/image/pic.png'
 
 class Analysis(object):
 
