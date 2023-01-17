@@ -6,17 +6,14 @@ import os
 from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
 
-
-# from core import *
+#import app
+from core import *
 from core import ImageLoad
 
-UPLOAD_FOLDER = 'static/image'
-uploaded_image = 'pic.png'
-pic = UPLOAD_FOLDER+'/'+uploaded_image
-#pic = 'static/image/pic.png'
+
+# pic = 'static/image/pic.png'
 
 class Analysis(object):
-
 
     def FractAnalysis(self, pic):
         name = os.path.basename(pic)
@@ -88,9 +85,7 @@ class Analysis(object):
         with open("test.txt",
                   "a") as obj_file:  # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
             print(name, " - ", round(-Polyfit[0], 3), "\n", file=obj_file)
-        return 'Значение фрактальной размерности ' + str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод
-
-
+        return str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод фрактмальная размерность
 
     # pass
 
@@ -102,7 +97,7 @@ class Analysis(object):
         img.findCanny()
         # print('Общая площадь: ', img.ploshad)
         # print('Массив:\n', str(img.area_arr))
-        return 'Общая площадь: ' + str(img.ploshad) + '\n' + 'Массив:\n' + str(img.area_arr)
+        return str(img.ploshad) + '\n'  # + 'Массив:\n' + str(img.area_arr) #Первое площадь
         # pass
         # return 0;
 

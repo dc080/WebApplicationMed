@@ -18,9 +18,9 @@
             <div class="container hero-container">
                 <form method="post" enctype="multipart/form-data">
                 <div class="img"><img src = "static/image/{{uploaded_image}}"></div>
-
                     <input type = "file" name="file">
                     <input type="submit" value="Загрузить изображение">
+                    <input type="calc" value="Результат">
                     </form>
                 <div class="settings">
                     <h1>Настройки</h1>
@@ -46,12 +46,12 @@
                 </div>
                 <div class="results">
                     <h1>Результаты</h1>
-                    <p>Площади</p>
-                    <div class="content">Здесь выводятся площади</div>
+                    <p>Фрактальная размерность</p>
+                    <div class="content">{{Res}}</div>
                     <p>Общая площадь</p>
-                    <div class="content2">{{Res}}</div>
+                    <div class="content2">{{S}}</div>
                     <p>Длины линий</p>
-                    <div class="content">Здесь выводятся длины</div>
+                    <div class="content"></div>
                 </div>
             </div>
         </section>
