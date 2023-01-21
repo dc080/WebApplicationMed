@@ -3,10 +3,7 @@ import numpy as np
 import os
 from numpy import array, sqrt
 
-
-def click_exit():
-    exit(0)
-
+path = 'static/image'
 
 class ImageLoad:
     image = []
@@ -89,10 +86,11 @@ class ImageLoad:
                 # self.area_arr.append(cm_ar)
                 # print((area / 37.938105)/40 , "см^2/", area, "px")
 
+
         cv2.fillPoly(contour_image, cnts, color=((150, 50, 10)))
         # cv2.imshow("area", contour_image)
         k = cv2.waitKey(0)
         if k == 27:
             cv2.destroyAllWindows()
-        cv2.imwrite(os.path.join('', 'tempimg.jpg'), contour_image)
+        cv2.imwrite(os.path.join(path, 'tempimg.jpg'), contour_image)
         return (self.ploshad)  # Возвращает итоговое значение площади

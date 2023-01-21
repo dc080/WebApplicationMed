@@ -5,6 +5,7 @@ import pylab as pl
 import os
 from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 
 #import app
 from core import *
@@ -35,8 +36,8 @@ class Analysis(object):
         img = Image.open(os.path.join(path, 'contours.jpg'))  # делаем реверс цвета
         inverted_image = ImageOps.invert(img)
         inverted_image = inverted_image.convert('1')
-        inverted_image.save('img.png')  # Сохраняется изображение img.png в папку, откуда был запущен код
-        image = pl.imread('img.png')  # читаем изображение, создаем массив
+        inverted_image.save(os.path.join(path, 'img.png'))  # Сохраняется изображение img.png в папку, откуда был запущен код
+        image = pl.imread(os.path.join(path, 'img.png'))  # читаем изображение, создаем массив
         ax = plt.gca()  # оси
 
         # #############################  Шаг 2: Создание списка масштабов
@@ -75,16 +76,16 @@ class Analysis(object):
         # print('Следовательно, box dimension равен ', round(-Polyfit[0], 3), '.\n')
 
         # ############################## Шаг 5: График линейной регрессии
-        plt.clf()
-        pl.plot(np.log(scales), np.log(N), 'o', mfc='none')
-        pl.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
-        pl.xlabel('log $\\ delta$')
-        pl.ylabel('log N')
-        plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png (Нужен ли другой формат?)
+        #plt.clf()
+        #pl.plot(np.log(scales), np.log(N), 'o', mfc='none')
+        #pl.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
+        #pl.xlabel('log $\\ delta$')
+        #pl.ylabel('log N')
+        #plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png (Нужен ли другой формат?)
         # print('Значение фрактальной размерности', round(-Polyfit[0], 3), '\n') # Упаковать в string и возвращать как результат функции???
-        with open("test.txt",
-                  "a") as obj_file:  # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
-            print(name, " - ", round(-Polyfit[0], 3), "\n", file=obj_file)
+       # with open("test.txt",
+                 # "a") as obj_file:  # Нужен ли данный файл в принципе? Он его не перезаписывает, а добавляет туда
+           # print(name, " - ", round(-Polyfit[0], 3), "\n", file=obj_file)
         return str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод фрактмальная размерность
 
     # pass
@@ -97,7 +98,7 @@ class Analysis(object):
         img.findCanny()
         # print('Общая площадь: ', img.ploshad)
         # print('Массив:\n', str(img.area_arr))
-        return str(img.ploshad) + '\n'  # + 'Массив:\n' + str(img.area_arr) #Первое площадь
+        return str(img.ploshad) + '\n'  # + 'Массив:\n' + str(img.area_arr) #Первая  площадь
         # pass
         # return 0;
 
