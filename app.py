@@ -21,10 +21,7 @@ pic = UPLOAD_FOLDER + '/' + uploaded_image
 answer = Analysis()
 answerS = Analysis()
 
-Border = {
-    'light': 150,
-    'dark': 150
-}
+
 
 
 # , Res=answer.FractAnalysis(pic), S=answerS.SquareNLinesAnalysis(pic, light, dark)) - Вывод в алгоритм
@@ -39,16 +36,17 @@ def index():
     if request.method == "POST":
         try:
             file = request.files['file']
-            Light = Border['light']
-            Dark = Border['dark']
+            Light = request.form['light']
+            Dark = request.form['dark']
             light = int(Light)
             dark = int(Dark)
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
             uploaded_image = file.filename
             pic = UPLOAD_FOLDER + '/' + uploaded_image
-            return render_template("index.html", pic=UPLOAD_FOLDER + '/' + uploaded_image, light=Border['light'],
-                                   dark=Border['dark'],
+            return render_template("index.html", pic=UPLOAD_FOLDER + '/' + uploaded_image, uploaded_image=file.filename,
+                                   contours="static/image/tempimg.jpg", light=request.form['light'],
+                                   dark=request.form['dark'],
                                    Res=answer.FractAnalysis(pic), S=answerS.SquareNLinesAnalysis(pic, light, dark))
         except FileNotFoundError:
             return render_template("index.html")
@@ -56,14 +54,14 @@ def index():
         return render_template("index.html")
 
 
-@app.route('/number', methods=['GET', 'POST'])
-def number():
-    if request.method == 'POST':
-        Border['light'] = request.form['light']
-        Border['dark'] = request.form['dark']
-        return render_template("index.html", light=Border['light'], dark=Border['dark'])
-    else:
-        return render_template("index.html")
+#@app.route('/number', methods=['GET', 'POST'])
+#def number():
+ #   if request.method == 'POST':
+  #      Border['light'] = request.form['light']
+   #     Border['dark'] = request.form['dark']
+    #    return render_template("index.html", light=Border['light'], dark=Border['dark'])
+   # else:
+    #    return render_template("index.html")
 
 
 # @app.route('/load', methods=['POST'])
@@ -79,4 +77,4 @@ def number():
 
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

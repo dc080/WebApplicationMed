@@ -90,6 +90,8 @@ class Analysis(object):
 
     # pass
 
+
+
     def SquareNLinesAnalysis(self, pic, light, dark):
         img = ImageLoad()
         img.auto_canny(pic)
