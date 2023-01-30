@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Главная страница</title>
+</head>
+<body>
+    <h1>Все что было сделано удалилось, ведутся ремонтные работы</h1>
+    <form method=post enctype="multipart/form-data">
+        <input type = "file" name="file">
+        <input type="submit" value="Загрузить">
+        <img src = "{{url_for('index', filename=uploaded_image)}}"/>
+        </form>
+
+</body>
+</html>

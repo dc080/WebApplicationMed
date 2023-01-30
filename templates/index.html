@@ -1,13 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Главная страница</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet"/>
 </head>
 <body>
-    <h1>Все что было сделано удалилось, ведутся ремонтные работы</h1>
+    <header class="header">
+        <div class="container header-container">
+            <a href="" class="link">Площади и линии</a>
+            <a href="" class="link">Фрактальный анализ</a>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="container hero-container">
+                <form method="post" enctype="multipart/form-data" action="/">
+                    <div class="img"><img class="img-file" src = "{{contours}}"></div>
+                    <label class="input-file">
+                        <input type = "file" name="file">
+                        <span>Выберите файл</span>
+                    </label>
+                    <input class="input-submit" type="submit" name="load" value="Загрузить изображение"><br> <!-- Изменил кнопку -->
+                    <input class="input-submit" type="submit" name="edit" value="PrepareToDoMagic"> <!-- Добавил кнопку -->
+                    <input class="input-submit" type="submit" name="runAlgo" value="DoMagic"> <!-- Добавил кнопку -->
+                        <div class="range">
+                            <label class="custom-range">
+                                <span>Верхняя граница</span><br>
+                                <input type="range" value={{light}} min="0" max="255" id="range1" oninput="rangenumber1.value=value"/>
+                                <input type="number" name="light" id="rangenumber1" min="0" max="255" value={{light}} oninput="range1.value=value">
+                            </label>
+                        </div>
+                        <div class="range">
+                            <label class="custom-range">
+                                <span>Нижняя граница</span><br>
+                                <input type="range" value={{dark}} min="0" max="255" id="range2" oninput="rangenumber2.value=value"/>
+                                <input type="number" name="dark" id="rangenumber2" min="0" max="255" value={{dark}} oninput="range2.value=value">
+                                <!---<input class="input-calc" type="submit" value="Загрузить изображение"><br> --->
+                            </label>
+                        </div>
+                </form>
+                <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+                <script>
+                    $('.input-file input[type=file]').on('change', function(){
+                        let file = this.files[0];
+                        $(this).next().html(file.name);
+                    });
+                </script>
+                <div class="settings">
+                    <h1>Настройки</h1>
+                    <div class="line"></div>
+                    <div class="setting">
+                        <div class="radio radio-1">
+                            <input class="custom-radio" type="radio" id="color-1" name="color" value="indigo">
+                            <label for="color-1">Оригинал</label>
+                        </div>
+                        
+                        <div class="radio">
+                            <input class="custom-radio" type="radio" id="color-2" name="color" value="red">
+                            <label for="color-2">Измененная</label>
+                        </div>
+                        <div class="line"></div>
+                        <div class="checkbox">
+                            <label class="custom-checkbox">
+                              <input type="checkbox" name="color-1" value="indigo">
+                              <span>Средние линии</span>
+                            </label>
+                        </div>
+                        <div class="line"></div>
+
+                    </div>
+                </div>
+
+                <div class="results">
+                    <h1>Результаты</h1>
+                    <div class="line"></div>
+                    <p class="">Фрактальная размерность</p>
+                    <div class="content">{{Res}}</div>
+                    <p>Общая площадь</p>
+                    <div class="content2">{{S}}</div>
+                    <div class="line"></div>
+                    <p>Длины линий</p>
+                    <div class="content"></div>
+                </div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
+
+
+
