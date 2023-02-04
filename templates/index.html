@@ -7,12 +7,12 @@
     <link type="text/css" href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet"/>
 </head>
 <body>
-    <header class="header">
+    <!---<header class="header">
         <div class="container header-container">
             <a href="" class="link">Площади и линии</a>
             <a href="" class="link">Фрактальный анализ</a>
         </div>
-    </header>
+    </header>-->
     <main>
         <section class="hero">
             <div class="container hero-container">
@@ -23,8 +23,10 @@
                         <span>Выберите файл</span>
                     </label>
                     <input class="input-submit" type="submit" name="load" value="Загрузить изображение"><br> <!-- Изменил кнопку -->
-                    <input class="input-submit" type="submit" name="edit" value="PrepareToDoMagic"> <!-- Добавил кнопку -->
-                    <input class="input-submit" type="submit" name="runAlgo" value="DoMagic"> <!-- Добавил кнопку -->
+                    <br><br>
+                    <input class="input-submit" type="submit" name="edit" value="Применить значения"> <!-- Добавил кнопку -->
+                    <input class="input-submit" type="submit" name="runAlgo" value="Расчитать площадь"> <!-- Добавил кнопку -->
+                    <br><br>
                         <div class="range">
                             <label class="custom-range">
                                 <span>Верхняя граница</span><br>
@@ -38,6 +40,15 @@
                                 <input type="range" value={{dark}} min="0" max="255" id="range2" oninput="rangenumber2.value=value"/>
                                 <input type="number" name="dark" id="rangenumber2" min="0" max="255" value={{dark}} oninput="range2.value=value">
                                 <!---<input class="input-calc" type="submit" value="Загрузить изображение"><br> --->
+                                {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                        <ul class=flashes>
+                                        {% for message in messages %}
+                                            <li>{{ message }}</li>
+                                        {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                {% endwith %}
                             </label>
                         </div>
                 </form>
@@ -52,24 +63,28 @@
                     <h1>Настройки</h1>
                     <div class="line"></div>
                     <div class="setting">
+                        <form method="post" enctype="multipart/form-data" action="/">
                         <div class="radio radio-1">
-                            <input class="custom-radio" type="radio" id="color-1" name="color" value="indigo">
+                            <input class="custom-radio" type="submit" id="color-1" name="orig" value="indigo">
                             <label for="color-1">Оригинал</label>
                         </div>
                         
                         <div class="radio">
-                            <input class="custom-radio" type="radio" id="color-2" name="color" value="red">
+                            <input class="custom-radio" type="submit" id="color-2" name="modifed" value="red">
                             <label for="color-2">Измененная</label>
                         </div>
-                        <div class="line"></div>
+                            <br>
+                            <a class="input-submit" href="{{contours}}">Скачать</a>
+                            <br>
+                        </form>
+                        <!---<div class="line"></div>
                         <div class="checkbox">
                             <label class="custom-checkbox">
                               <input type="checkbox" name="color-1" value="indigo">
                               <span>Средние линии</span>
                             </label>
                         </div>
-                        <div class="line"></div>
-
+                        <div class="line"></div> --->
                     </div>
                 </div>
 
@@ -80,9 +95,9 @@
                     <div class="content">{{Res}}</div>
                     <p>Общая площадь</p>
                     <div class="content2">{{S}}</div>
-                    <div class="line"></div>
+                    <!---<div class="line"></div>
                     <p>Длины линий</p>
-                    <div class="content"></div>
+                    <div class="content"></div>--->
                 </div>
             </div>
         </section>

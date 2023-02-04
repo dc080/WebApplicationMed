@@ -52,11 +52,11 @@ class FindFractNumber:
         Polyfit = np.polyfit(np.log(scales), np.log(N), 1)
 
         # ############################## Шаг 5: График линейной регрессии
-        plt.clf()
-        plt.plot(np.log(scales), np.log(N), 'o', mfc='none')
-        plt.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
-        plt.xlabel('log $\\ delta$')
-        plt.ylabel('log N')
-        plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png
+        #plt.clf()
+        #plt.plot(np.log(scales), np.log(N), 'o', mfc='none')
+        #plt.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
+        #plt.xlabel('log $\\ delta$')
+        #plt.ylabel('log N')
+        #plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png
 
         return str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод фрактмальная размерность

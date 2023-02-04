@@ -200,6 +200,30 @@ button:focus {
   min-width: 200px;
 }
 
+.input-submit {
+  position: relative;
+	display: inline-block;
+	cursor: pointer;
+	outline: none;
+	text-decoration: none;
+	font-size: 14px;
+  font-weight: 600;
+	vertical-align: middle;
+	color: rgb(0, 0, 0);
+	text-align: center;
+	border-radius: 10px;
+	background-color: #90AF67;
+	line-height: 22px;
+	height: 40px;
+	padding: 10px 20px;
+	box-sizing: border-box;
+	border: none;
+	margin: 0;
+	transition: background-color 0.2s;
+  max-width: 200px;
+  min-width: 200px;
+}
+
 /* Hover/active */
 .input-submit:hover {
 	background-color: #a9c97e;
@@ -262,8 +286,6 @@ button:focus {
 .custom-radio:disabled+label::before {
   background-color: #e9ecef;
 }
-
-
 .checkbox {
   margin-bottom: 0.2em;
 }
@@ -330,8 +352,6 @@ button:focus {
 .custom-checkbox>input:disabled+span::before {
   background-color: #e9ecef;
 }
-
-
 
 input {
   display: inline-block;

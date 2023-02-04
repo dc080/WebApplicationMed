@@ -1,7 +1,7 @@
 import datetime
 import random
 
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 
@@ -60,47 +60,71 @@ def calculatePathToEditedFile(id): # Функция возврата пути к
 
 def renameFile(filename, id):
     fileName, fileExtension = os.path.splitext(filename) # Разбиение файла на его путь с названием и типом файла
-    os.rename(filename, calculatePathToSavedFile(id, fileExtension)) # Переименование загруженного файла на файл с
+    pathToNewFile = calculatePathToSavedFile(id, fileExtension) # Расчет нового пути к переименованному файлу
+    if os.path.isfile(pathToNewFile): # Проверка на существующий файл, в который хотим переименовывать
+        os.remove(pathToNewFile) # Удаляем если есть
+    os.rename(filename, pathToNewFile) # Переименование загруженного файла на файл с
     # необходимым названием и исходным типом файла
     return fileExtension # Возврат типа файла (Вроде это костыль с моей стороны)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == "POST":
-        if "load" in request.form: # Если нажата кнопка загрузки
-            idSession = verifySessionId() # Присвоение ID, если это надо
-            file = request.files['file'] # Запрос файла
-            savePath = calculateSavePath(idSession) # Обозначение пути до загруженного файла
-            if not os.path.exists(savePath): # Если пути нет
-                os.makedirs(savePath) # Создать его
-            savedFile = os.path.join(savePath, file.filename) # Путь до сохраняемого файла с его исходным названием
-            file.save(savedFile) # Сохранение файла
-            extention = renameFile(savedFile, idSession) # Переименовка файла
-            pic = calculatePathToSavedFile(idSession, extention) # Путь до сохраненного файла с новым названием
-            algoSquare.loadImage(pic) # Загрузка изображения в алгоритм
-            session['fractalNumber'] = algoFract.resolveFractNumber(pic) # Сохранение результата алгоритма в хэш
-            return render_template("index.html", uploaded_image=file.filename, contours=pic,
+        try:
+            if "load" in request.form: # Если нажата кнопка загрузки
+                idSession = verifySessionId() # Присвоение ID, если это надо
+                file = request.files['file'] # Запрос файла
+                savePath = calculateSavePath(idSession) # Обозначение пути до загруженного файла
+                if not os.path.exists(savePath): # Если пути нет
+                    os.makedirs(savePath) # Создать его
+                savedFile = os.path.join(savePath, file.filename) # Путь до сохраняемого файла с его исходным названием
+                file.save(savedFile) # Сохранение файла
+                extention = renameFile(savedFile, idSession) # Переименовка файла
+                pic = calculatePathToSavedFile(idSession, extention) # Путь до сохраненного файла с новым названием
+                algoSquare.loadImage(pic) # Загрузка изображения в алгоритм
+                session['fractalNumber'] = algoFract.resolveFractNumber(pic) # Сохранение результата алгоритма в хэш
+                return render_template("index.html", uploaded_image=file.filename, contours=pic,
                                    Res=session['fractalNumber']) # Отрисовка веб-страницы
 
-        elif "edit" in request.form: # Если нажата кнопка изменения
-            light = int(request.form['light']) # Считывание значения ползунков
-            dark = int(request.form['dark']) # -/-
-            algoSquare.light = light # Занесение значений в алгоритм
-            algoSquare.dark = dark # -/-
-            algoSquare.editImage() # Обработка изображения
-            return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=request.form['light'],
+            elif "edit" in request.form: # Если нажата кнопка изменения
+                light = int(request.form['light']) # Считывание значения ползунков
+                dark = int(request.form['dark']) # -/-
+                algoSquare.light = light # Занесение значений в алгоритм
+                algoSquare.dark = dark # -/-
+                algoSquare.editImage() # Обработка изображения
+                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=request.form['light'],
                                    dark=request.form['dark'], Res=session['fractalNumber']) # Отрисовка веб-страницы
 
-        elif "runAlgo" in request.form: # Если нажата кнопка запуска алгоритма
-            light = int(request.form['light']) # Считывание значения ползунков
-            dark = int(request.form['dark']) # -/-
-            algoSquare.light = light # Занесение значений в алгоритм
-            algoSquare.dark = dark # -/-
-            algoSquare.editImage() # Обработка изображения
-            session['squareNumber'] = algoSquare.resolveSquare() # Занесение значения площади в хэш
-            return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']),
+            elif "runAlgo" in request.form: # Если нажата кнопка запуска алгоритма
+                light = int(request.form['light']) # Считывание значения ползунков
+                dark = int(request.form['dark']) # -/-
+                algoSquare.light = light # Занесение значений в алгоритм
+                algoSquare.dark = dark # -/-
+                algoSquare.editImage() # Обработка изображения
+                session['squareNumber'] = algoSquare.resolveSquare() # Занесение значения площади в хэш
+                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']),
                                    light=request.form['light'], dark=request.form['dark'],
                                    Res=session['fractalNumber'], S=session['squareNumber']) # Отрисовка веб-страницы
+            elif "orig" in request.form:
+                savePath = calculateSavePath(session['idSession'])
+                return render_template ("index.html", contours = savePath + "/input.png")
+            elif "modifed" in request.form:
+                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']))
+
+        except FileNotFoundError:
+            flash('Выберите изображение')
+            return render_template("index.html")
+        except IsADirectoryError:
+            flash('Выберите изображение')
+            return render_template("index.html")
+        except ValueError:
+            savePath = calculateSavePath(session['idSession'])
+            flash('Некорректное значение границ')
+            return render_template("index.html", contours=savePath + "/input.png")
+        except Exception:
+            flash('Сначала загрузите изображение')
+            return render_template("index.html")
+
         else:
             return render_template("index.html") # Отрисовка веб-страницы
     else:
@@ -108,6 +132,6 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True, host='0.0.0.0') # Запуск веб-приложения, с многопоточностью и с возможностью
+    app.run(debug=True, threaded=True)#, host='0.0.0.0') # Запуск веб-приложения, с многопоточностью и с возможностью
     # слушать все внешние ip
 
