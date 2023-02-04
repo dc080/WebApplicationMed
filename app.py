@@ -1,5 +1,6 @@
 import datetime
 import random
+import shutil
 
 from flask import Flask, render_template, request, session, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -26,7 +27,6 @@ db = SQLAlchemy(app)
 
 algoFract = FindFractNumber()
 algoSquare = FindSquareCrystals()
-
 
 def verifySessionId(): # Функция для определения id
     if not 'dateSingIn' in session: # Если в хэше нет записи о дате
@@ -84,7 +84,7 @@ def index():
                 algoSquare.loadImage(pic) # Загрузка изображения в алгоритм
                 session['fractalNumber'] = algoFract.resolveFractNumber(pic) # Сохранение результата алгоритма в хэш
                 return render_template("index.html", uploaded_image=file.filename, contours=pic,
-                                   Res=session['fractalNumber']) # Отрисовка веб-страницы
+                                   Res=session['fractalNumber'], light=algoSquare.light, dark=algoSquare.dark) # Отрисовка веб-страницы
 
             elif "edit" in request.form: # Если нажата кнопка изменения
                 light = int(request.form['light']) # Считывание значения ползунков
@@ -107,28 +107,33 @@ def index():
                                    Res=session['fractalNumber'], S=session['squareNumber']) # Отрисовка веб-страницы
             elif "orig" in request.form:
                 savePath = calculateSavePath(session['idSession'])
-                return render_template ("index.html", contours = savePath + "/input.png")
+                return render_template("index.html", contours=savePath + "/input.png", light=algoSquare.light, dark=algoSquare.dark)
             elif "modifed" in request.form:
-                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']))
+                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=algoSquare.light, dark=algoSquare.dark)
 
         except FileNotFoundError:
             flash('Выберите изображение')
-            return render_template("index.html")
+            return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
         except IsADirectoryError:
             flash('Выберите изображение')
-            return render_template("index.html")
+            return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
         except ValueError:
             savePath = calculateSavePath(session['idSession'])
             flash('Некорректное значение границ')
-            return render_template("index.html", contours=savePath + "/input.png")
+            return render_template("index.html", contours=savePath + "/input.png", light=algoSquare.light, dark=algoSquare.dark)
         except Exception:
             flash('Сначала загрузите изображение')
-            return render_template("index.html")
+            return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
 
         else:
+
             return render_template("index.html") # Отрисовка веб-страницы
     else:
-        return render_template("index.html") # Отрисовка веб-страницы
+        files = os.listdir(UPLOAD_FOLDER)
+        if len(files) > 1:
+            shutil.rmtree(UPLOAD_FOLDER)
+            os.mkdir(UPLOAD_FOLDER)
+        return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)  # Отрисовка веб-страницы
 
 
 if __name__ == "__main__":

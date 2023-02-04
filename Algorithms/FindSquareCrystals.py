@@ -8,8 +8,8 @@ import numpy as np
 class FindSquareCrystals:
     image = []
     grayImg = []
-    light = 200
-    dark = 150
+    light = 150
+    dark = 200
     median = 0
     path = ""
     contours = []
@@ -17,8 +17,8 @@ class FindSquareCrystals:
     def __init__(self):
         self.image = []
         self.grayImg = []
-        self.light = 200
-        self.dark = 150
+        self.light = 150
+        self.dark = 200
         self.median = 0
         self.path = ""
         self.contours = []
