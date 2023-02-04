@@ -48,9 +48,9 @@ def calculateSavePath(id): # Функция расчета папки с исп�
     return UPLOAD_FOLDER + '/' + str(id) # Базовая папка + папка с названием id
 
 
-def calculatePathToSavedFile(id, extention): # Функция возврата пути к загруженному файлу с использованием id,
+def calculatePathToSavedFile(id): # Функция возврата пути к загруженному файлу с использованием id,
     # и типом файла
-    return UPLOAD_FOLDER + '/' + str(id) + '/input' + extention # Базовая папка + папка с названием id + тип файла
+    return UPLOAD_FOLDER + '/' + str(id) + '/input' + session['fileExtension'] # Базовая папка + папка с названием id + тип файла
 
 
 def calculatePathToEditedFile(id): # Функция возврата пути к файлу, созданному алгоритмом с использованием id,
@@ -60,12 +60,13 @@ def calculatePathToEditedFile(id): # Функция возврата пути к
 
 def renameFile(filename, id):
     fileName, fileExtension = os.path.splitext(filename) # Разбиение файла на его путь с названием и типом файла
-    pathToNewFile = calculatePathToSavedFile(id, fileExtension) # Расчет нового пути к переименованному файлу
+    session['fileExtension'] = fileExtension # Сохранение расширения в кеш
+    pathToNewFile = calculatePathToSavedFile(id) # Расчет нового пути к переименованному файлу
     if os.path.isfile(pathToNewFile): # Проверка на существующий файл, в который хотим переименовывать
         os.remove(pathToNewFile) # Удаляем если есть
     os.rename(filename, pathToNewFile) # Переименование загруженного файла на файл с
     # необходимым названием и исходным типом файла
-    return fileExtension # Возврат типа файла (Вроде это костыль с моей стороны)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -79,8 +80,8 @@ def index():
                     os.makedirs(savePath) # Создать его
                 savedFile = os.path.join(savePath, file.filename) # Путь до сохраняемого файла с его исходным названием
                 file.save(savedFile) # Сохранение файла
-                extention = renameFile(savedFile, idSession) # Переименовка файла
-                pic = calculatePathToSavedFile(idSession, extention) # Путь до сохраненного файла с новым названием
+                renameFile(savedFile, idSession) # Переименовка файла
+                pic = calculatePathToSavedFile(idSession) # Путь до сохраненного файла с новым названием
                 algoSquare.loadImage(pic) # Загрузка изображения в алгоритм
                 session['fractalNumber'] = algoFract.resolveFractNumber(pic) # Сохранение результата алгоритма в хэш
                 return render_template("index.html", uploaded_image=file.filename, contours=pic,
@@ -106,8 +107,8 @@ def index():
                                    light=request.form['light'], dark=request.form['dark'],
                                    Res=session['fractalNumber'], S=session['squareNumber']) # Отрисовка веб-страницы
             elif "orig" in request.form:
-                savePath = calculateSavePath(session['idSession'])
-                return render_template("index.html", contours=savePath + "/input.png", light=algoSquare.light, dark=algoSquare.dark)
+                savePath = calculatePathToSavedFile(session['idSession'])
+                return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark)
             elif "modifed" in request.form:
                 return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=algoSquare.light, dark=algoSquare.dark)
 
@@ -118,9 +119,9 @@ def index():
             flash('Выберите изображение')
             return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
         except ValueError:
-            savePath = calculateSavePath(session['idSession'])
+            savePath = calculatePathToSavedFile(session['idSession'])
             flash('Некорректное значение границ')
-            return render_template("index.html", contours=savePath + "/input.png", light=algoSquare.light, dark=algoSquare.dark)
+            return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark)
         except Exception:
             flash('Сначала загрузите изображение')
             return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
@@ -137,6 +138,6 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, threaded=True)#, host='0.0.0.0') # Запуск веб-приложения, с многопоточностью и с возможностью
+    app.run(debug=True, threaded=True, host='0.0.0.0') # Запуск веб-приложения, с многопоточностью и с возможностью
     # слушать все внешние ip
 
