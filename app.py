@@ -29,6 +29,9 @@ algoFract = FindFractNumber()
 algoSquare = FindSquareCrystals()
 
 def verifySessionId(): # Функция для определения id
+    ###################################################################
+    session.clear() # ТЕСТОВАЯ ХЕРНЯ КОТОРУЮ НАДО УДАЛИТЬ ПОСЛЕ ОТЛАДКИ
+    ###################################################################
     if not 'dateSingIn' in session: # Если в хэше нет записи о дате
         session.clear() # Очищает весь хэш сессии
     elif (datetime.datetime.now() - session['dateSingIn']).days > 1: # Или если дата есть, но у нее разница с текущей
@@ -83,6 +86,10 @@ def index():
                 renameFile(savedFile, idSession) # Переименовка файла
                 pic = calculatePathToSavedFile(idSession) # Путь до сохраненного файла с новым названием
                 algoSquare.loadImage(pic) # Загрузка изображения в алгоритм
+                if 'squareNumber' in session: # Очистка результатов прошлых изображений
+                    session.pop('squareNumber') # Удалить результат
+                if 'fractalNumber' in session: # Очистка результатов прошлых изображений
+                    session.pop('fractalNumber') # Удалить результат
                 session['fractalNumber'] = algoFract.resolveFractNumber(pic) # Сохранение результата алгоритма в хэш
                 return render_template("index.html", uploaded_image=file.filename, contours=pic,
                                    Res=session['fractalNumber'], light=algoSquare.light, dark=algoSquare.dark) # Отрисовка веб-страницы
@@ -93,6 +100,8 @@ def index():
                 algoSquare.light = light # Занесение значений в алгоритм
                 algoSquare.dark = dark # -/-
                 algoSquare.editImage() # Обработка изображения
+                if 'squareNumber' in session:
+                    session.pop('squareNumber')
                 return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=request.form['light'],
                                    dark=request.form['dark'], Res=session['fractalNumber']) # Отрисовка веб-страницы
 
@@ -106,11 +115,29 @@ def index():
                 return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']),
                                    light=request.form['light'], dark=request.form['dark'],
                                    Res=session['fractalNumber'], S=session['squareNumber']) # Отрисовка веб-страницы
-            elif "orig" in request.form:
-                savePath = calculatePathToSavedFile(session['idSession'])
-                return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark)
-            elif "modifed" in request.form:
-                return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']), light=algoSquare.light, dark=algoSquare.dark)
+            elif "orig" in request.form: # Если нажата "радио"кнопка оригинала
+                savePath = calculatePathToSavedFile(session['idSession']) # Путь к оригинальному файлу
+                if not 'fractalNumber' in session and not 'squareNumber' in session: # Если нет результатов
+                    return render_template("index.html", contours=savePath, light=algoSquare.light, # Рендер без результатов
+                                           dark=algoSquare.dark)
+                elif not 'squareNumber' in session: # Если нет только площадей
+                    return render_template("index.html", contours=savePath, light=algoSquare.light,
+                                           dark=algoSquare.dark, Res=session['fractalNumber']) # Рендер с фрактальной
+                else: # Есть все результаты
+                    return render_template("index.html", contours=savePath, light=algoSquare.light,
+                                           dark=algoSquare.dark, Res=session['fractalNumber'],
+                                           S=session['squareNumber']) # Есть все результаты, рендер их
+
+            elif "modifed" in request.form: # Если нажата "радио"кнопка оригинала
+                showPath = calculatePathToEditedFile(session['idSession']) # Путь к измененному файлу
+                if os.path.isfile(showPath): # Если этот файл существует (ПОЧЕМУ-ТО НЕ РАБОТАЕТ)
+                    showPath = calculatePathToSavedFile['idSession'] # Путь к оригинальному файлу
+                if not 'squareNumber' in session: # Если нет площадей
+                    return render_template("index.html", contours=showPath, light=algoSquare.light,
+                                            dark=algoSquare.dark, Res=session['fractalNumber'])  # Рендер с фрактальной
+                else: # Есть все результаты
+                    return render_template("index.html", contours=showPath, light=algoSquare.light, dark=algoSquare.dark,
+                                            Res=session['fractalNumber'], S=session['squareNumber']) # Есть все результаты, рендер их
 
         except FileNotFoundError:
             flash('Выберите изображение')
@@ -121,7 +148,12 @@ def index():
         except ValueError:
             savePath = calculatePathToSavedFile(session['idSession'])
             flash('Некорректное значение границ')
-            return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark)
+            if not 'squareNumber' in session: # Если нет площадей
+                return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark,
+                                       Res=session['fractalNumber'])  # Рендер с фрактальной
+            else: # Есть все результаты
+                return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark,
+                                       Res=session['fractalNumber'], S=session['squareNumber']) # Есть все результаты, рендер их
         except Exception:
             flash('Сначала загрузите изображение')
             return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
@@ -131,7 +163,7 @@ def index():
             return render_template("index.html") # Отрисовка веб-страницы
     else:
         files = os.listdir(UPLOAD_FOLDER)
-        if len(files) > 1:
+        if len(files) > 150: # Уже число близкое к реальному (Количество сейвов 200)
             shutil.rmtree(UPLOAD_FOLDER)
             os.mkdir(UPLOAD_FOLDER)
         return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)  # Отрисовка веб-страницы
