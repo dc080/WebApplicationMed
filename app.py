@@ -31,7 +31,7 @@ algoSquare = FindSquareCrystals()
 
 def verifySessionId():  # Функция для определения id
     ###################################################################
-    # session.clear() # ТЕСТОВАЯ ХЕРНЯ КОТОРУЮ НАДО УДАЛИТЬ ПОСЛЕ ОТЛАДКИ
+    # session.clear() # ТЕСТОВАЯ СТРОКА КОТОРУЮ НАДО УДАЛИТЬ ПОСЛЕ ОТЛАДКИ
     ###################################################################
     if not 'dateSingIn' in session:  # Если в хэше нет записи о дате
         session.clear()  # Очищает весь хэш сессии
@@ -75,17 +75,20 @@ def renameFile(filename, id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    verifySessionId()
     if request.method == "POST":
         try:
             if "load" in request.form:  # Если нажата кнопка загрузки
                 idSession = verifySessionId()  # Присвоение ID, если это надо
-                files = os.listdir(UPLOAD_FOLDER + '/' + str(idSession))
-                if len(files) >= 1:
-                    shutil.rmtree(UPLOAD_FOLDER + '/' + str(idSession))
-                file = request.files['file']  # Запрос файла
                 savePath = calculateSavePath(idSession)  # Обозначение пути до загруженного файла
                 if not os.path.exists(savePath):  # Если пути нет
                     os.makedirs(savePath)  # Создать его
+                else:
+                    files = os.listdir(UPLOAD_FOLDER + '/' + str(idSession))
+                    if len(files) >= 1:
+                        shutil.rmtree(UPLOAD_FOLDER + '/' + str(idSession))
+                        os.makedirs(savePath)  # Создать его
+                file = request.files['file']  # Запрос файла
                 savedFile = os.path.join(savePath, file.filename)  # Путь до сохраняемого файла с его исходным названием
                 file.save(savedFile)  # Сохранение файла
                 renameFile(savedFile, idSession)  # Переименовка файла
@@ -161,8 +164,7 @@ def index():
                 else:
                     return render_template("index.html", contours="/static/static_image/not_found.png",
                                            light=algoSquare.light,
-                                           dark=algoSquare.dark, )
-                    # Есть все результаты, рендер их
+                                           dark=algoSquare.dark)  # Рендер пустой страницы
 
 
         except FileNotFoundError:
@@ -187,7 +189,6 @@ def index():
 
 
         else:
-
             return render_template("index.html")  # Отрисовка веб-страницы
     else:
         files = os.listdir(UPLOAD_FOLDER)
