@@ -2,7 +2,7 @@ import datetime
 import random
 import shutil
 
-from flask import Flask, render_template, request, session, flash
+from flask import Flask, render_template, request, session, flash, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 
@@ -75,6 +75,7 @@ def renameFile(filename, id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # return url_for('index') + '\n' + url_for('lines')
     verifySessionId()
     if request.method == "POST":
         try:
@@ -122,11 +123,12 @@ def index():
                 algoSquare.light = light  # Занесение значений в алгоритм
                 algoSquare.dark = dark  # -/-
                 algoSquare.editImage()  # Обработка изображения
-                session['squareNumber'] = algoSquare.resolveSquare()  # Занесение значения площади в хэш
+                session['squareNumber'] = algoSquare.resolvePercent()  # Занесение значения площади в хэш
                 return render_template("index.html", contours=calculatePathToEditedFile(session['idSession']),
                                        light=request.form['light'], dark=request.form['dark'],
                                        Res=session['fractalNumber'],
                                        S=session['squareNumber'])  # Отрисовка веб-страницы
+
             elif "orig" in request.form:  # Если нажата "радио"кнопка оригинала
                 files = os.listdir(UPLOAD_FOLDER + '/' + str((session['idSession'])))
                 if len(files) > 0:
@@ -148,7 +150,7 @@ def index():
                                            light=algoSquare.light,
                                            dark=algoSquare.dark, )
 
-            elif "modifed" in request.form:  # Если нажата "радио"кнопка оригинала
+            elif "modifed" in request.form:  # Если нажата "радио"кнопка измененного
                 files = os.listdir(UPLOAD_FOLDER + '/' + str((session['idSession'])))
                 if len(files) > 1:
                     showPath = calculatePathToEditedFile(session['idSession'])  # Путь к измененному файлу
@@ -166,6 +168,9 @@ def index():
                                            light=algoSquare.light,
                                            dark=algoSquare.dark)  # Рендер пустой страницы
 
+            # elif "lines" in request.form: # Если нажата "радио"кнопка линий
+            # return redirect(url_for('lines'))
+
 
         except FileNotFoundError:
             flash('Выберите изображение')
@@ -178,15 +183,14 @@ def index():
             flash('Некорректное значение границ')
             if not 'squareNumber' in session:  # Если нет площадей
                 return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark,
-                                       Res=session['fractalNumber'])  # Рендер с фрактальной
+                                   Res=session['fractalNumber'])  # Рендер с фрактальной
             else:  # Есть все результаты
                 return render_template("index.html", contours=savePath, light=algoSquare.light, dark=algoSquare.dark,
-                                       Res=session['fractalNumber'],
-                                       S=session['squareNumber'])  # Есть все результаты, рендер их
+                                   Res=session['fractalNumber'],
+                                   S=session['squareNumber'])  # Есть все результаты, рендер их
         except Exception:
             flash('Сначала загрузите изображение')
             return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)
-
 
         else:
             return render_template("index.html")  # Отрисовка веб-страницы
@@ -196,6 +200,21 @@ def index():
             shutil.rmtree(UPLOAD_FOLDER)
             os.mkdir(UPLOAD_FOLDER)
         return render_template("index.html", light=algoSquare.light, dark=algoSquare.dark)  # Отрисовка веб-страницы
+
+
+@app.route('/lines', methods=['GET', 'POST'])
+def lines():
+    if request.method == "POST":
+        try:
+            if "fuckGoBack" in request.form:
+                return redirect(url_for('index'))
+
+        except Exception:
+            return render_template("lines.html", contours="/static/static_image/not_found.png")
+        else:
+            return render_template("lines.html", contours="/static/static_image/not_found.png")
+    else:
+        return render_template("lines.html", contours="/static/static_image/not_found.png")
 
 
 if __name__ == "__main__":

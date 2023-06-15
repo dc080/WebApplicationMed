@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet"/>
+
+</head>
+<body>
+<main>
+    <section>
+        <div>
+             <form method="post" enctype="multipart/form-data" action="/lines">
+                <img class="img-file" id="image" tabindex="-1" onmousedown="onKeyDown()" onmouseup="onKeyUp()" draggable="false" src="{{contours}}">
+                <input type="submit" name="fuckGoBack" value="Назад"><br>
+                <input type="submit" name="fuckDontGoBack" value="КНОПКА"><br>
+             </form>
+        </div>
+    </section>
+</main>
+</body>
+    <script src="static/js/linesScript.js"></script>
+</html>

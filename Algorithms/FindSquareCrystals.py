@@ -13,6 +13,7 @@ class FindSquareCrystals:
     median = 0
     path = ""
     contours = []
+    rawImageSquare = 0
 
     def __init__(self):
         self.image = []
@@ -22,6 +23,7 @@ class FindSquareCrystals:
         self.median = 0
         self.path = ""
         self.contours = []
+        self.rawImageSquare = 0
 
     def loadImage(self, pic): # Загрузка изображения и превращение его в массив цветов?
         self.image = open(pic, 'rb')
@@ -29,6 +31,9 @@ class FindSquareCrystals:
         chunk = self.image.read()
         chunkArr = np.frombuffer(chunk, dtype=np.uint8)
         self.image = cv2.imdecode(chunkArr, cv2.IMREAD_COLOR)
+        imageWidth = self.image.shape[0]
+        imageHeight = self.image.shape[1]
+        self.rawImageSquare = imageHeight*imageWidth;
 
     def editImage(self):
         img = self.image.copy()
@@ -79,7 +84,12 @@ class FindSquareCrystals:
                 square += area
         return square
 
-    def runThisShit(self, pic, light, dark): # Отладочная функция, которую мне надо будет удалить
+    def resolvePercent(self):
+        square = self.resolveSquare()
+        return square/self.rawImageSquare*100
+
+
+    def runThis(self, pic, light, dark): # Отладочная функция, которую мне надо будет удалить
         #startTime = time.time()
         self.loadImage(pic)
         self.light = light
