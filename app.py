@@ -76,6 +76,8 @@ def renameFile(filename, id):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # return url_for('index') + '\n' + url_for('lines')
+    if not os.path.exists(UPLOAD_FOLDER):  # Если пути нет
+        os.makedirs(UPLOAD_FOLDER)  # Создать его
     verifySessionId()
     if request.method == "POST":
         try:
