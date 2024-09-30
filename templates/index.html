@@ -4,110 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet"/>
+    <link type="text/css" href="{{url_for('static', filename='css/indexStyle.css')}}" rel="stylesheet"/>
+    <script src="static/js/indexScript.js"></script>
 </head>
-<body>
-    <!---<header class="header">
-        <div class="container header-container">
-            <a href="" class="link">Площади и линии</a>
-            <a href="" class="link">Фрактальный анализ</a>
-        </div>
-    </header>-->
+
+<body class="body">
     <main>
-        <section class="hero">
-            <div class="container hero-container">
-                <form method="post" enctype="multipart/form-data" action="/">
-                    <div class="img"><img class="img-file" src = "{{contours}}"></div>
-                    <label class="input-file">
-                        <input type = "file" name="file">
-                        <span>Выберите файл</span>
-                    </label>
-                    <input class="input-submit" type="submit" name="load" value="Загрузить изображение"><br> <!-- Изменил кнопку -->
-                    <br><br>
-                    <input class="input-submit" type="submit" name="edit" value="Применить значения"> <!-- Добавил кнопку -->
-                    <input class="input-submit" type="submit" name="runAlgo" value="Расчитать площадь"> <!-- Добавил кнопку -->
-                    <br><br>
-                        <div class="range">
-                            <label class="custom-range">
-                                <span>Верхняя граница</span><br>
-                                <input type="range" value={{light}} min="0" max="255" id="range1" oninput="rangenumber1.value=value"/>
-                                <input type="number" name="light" id="rangenumber1" min="0" max="255" value={{light}} oninput="range1.value=value">
-                            </label>
-                        </div>
-                        <div class="range">
-                            <label class="custom-range">
-                                <span>Нижняя граница</span><br>
-                                <input type="range" value={{dark}} min="0" max="255" id="range2" oninput="rangenumber2.value=value"/>
-                                <input type="number" name="dark" id="rangenumber2" min="0" max="255" value={{dark}} oninput="range2.value=value">
-                                <!---<input class="input-calc" type="submit" value="Загрузить изображение"><br> --->
-                                {% with messages = get_flashed_messages() %}
-                                    {% if messages %}
-                                        <ul class=flashes>
-                                        {% for message in messages %}
-                                            <li>{{ message }}</li>
-                                        {% endfor %}
-                                        </ul>
-                                    {% endif %}
-                                {% endwith %}
-                            </label>
-                        </div>
-                </form>
-                <script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
-                <script>
-                    $('.input-file input[type=file]').on('change', function(){
-                        let file = this.files[0];
-                        $(this).next().html(file.name);
-                    });
-                </script>
-                <div class="settings">
-                    <h1>Настройки</h1>
-                    <div class="line"></div>
-                    <div class="setting">
-                        <form method="post" enctype="multipart/form-data" action="/">
-                        <div class="radio radio-1">
-                            <input class="custom-radio" type="submit" id="color-1" name="orig" value="indigo">
-                            <label for="color-1">Оригинал</label>
-                        </div>
-                        
-                        <div class="radio">
-                            <input class="custom-radio" type="submit" id="color-2" name="modifed" value="red">
-                            <label for="color-2">Измененная</label>
-                        </div>
-                        <div class="radio">
-                            <input class="custom-radio" type="submit" id="color-3" name="lines" value="red">
-                            <label for="color-3">Линии?</label>
-                        </div>
-                            <br>
-                            <a class="input-submit" href="{{contours}}">Скачать</a>
-                            <br>
-                        </form>
-                        <!---<div class="line"></div>
-                        <div class="checkbox">
-                            <label class="custom-checkbox">
-                              <input type="checkbox" name="color-1" value="indigo">
-                              <span>Средние линии</span>
-                            </label>
-                        </div>
-                        <div class="line"></div> --->
-                    </div>
+        <h1 class="h1_center">Приложение для медиков</h1><br>
+        <div class="div_form">
+            <form id="boxForUploadImage" class="box_for_upload_image" method="post" action="/loadImageToAlgorithms" enctype="multipart/form-data">
+                <input class="box_file" type="file" name="file" accept=".jpg,.png,.jpeg" id="uploadFile" required>
+                <label class="box_label" for="uploadFile" id="label"><span class="box_choose_file"><strong>Выберите файл</strong></span><span class="box_dragndrop">&nbsp;или перенесите его сюда</span>.</label>
+                <div class="box_buttons">
+                    <button class="input-submit" type="submit" name="load1">Загрузить изображение<br>в алгоритм </button>
+                    <button class="input-submit" type="submit" name="load2" formaction="/loadImageToLines">Загрузить изображение<br>в линии</button>
                 </div>
-
-                <div class="results">
-                    <h1>Результаты</h1>
-                    <div class="line"></div>
-                    <p class="">Фрактальная размерность</p>
-                    <div class="content">{{Res}}</div>
-                    <p>Общая площадь</p>
-                    <div class="content2">{{S}}</div>
-                    <!---<div class="line"></div>
-                    <p>Длины линий</p>
-                    <div class="content"></div>--->
-                </div>
-            </div>
-        </section>
+            </form>
+        </div>
     </main>
-</body>
-</html>
-
-
-
+</body></html>

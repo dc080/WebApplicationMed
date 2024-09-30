@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{{url_for('static', filename='css/algorithmsStyle.css')}}" rel="stylesheet"/>
+    <script src="static/js/algorithmsScript.js"></script>
+</head>
+<body>
+    <a href="/">Вернуться на главную страницу</a>
+    <a href="/lines/">Перейти к линиям</a>
+    <br>
+    <br>
+    <div class="div_form">
+        <img id="image" draggable="false" src="{{img}}" class="img_sample">
+        <button id="runAlgo" name="runAlgo" type="button" onclick="runAlgo()" class="run_algo_button">Запустить алгоритм</button>
+        <div class="borders">
+            <div class="upper_border">
+                <span>Верхняя граница</span>
+                <input type="range" value={{light}} min="0" max="255" id="upperRange" oninput="upperRangeNumber.value=value" onchange="applyBorders()">
+                <input type="number" value={{light}} min="0" max="255" id="upperRangeNumber" oninput="upperRange.value=value" onchange="applyBorders()">
+            </div>
+
+            <div class="lower_border">
+                <span>Нижняя граница</span>
+                <input type="range" value={{dark}} min="0" max="255" id="lowerRange" oninput="lowerRangeNumber.value=value" onchange="applyBorders()">
+                <input type="number" value={{dark}} min="0" max="255" id="lowerRangeNumber" oninput="lowerRange.value=value" onchange="applyBorders()">
+            </div>
+        </div>
+        <div class="div_ratio">
+            <input type="radio" name="imgType" id="orig" value="orig" onchange="getCorrectImgType(this.value)" checked>
+            <label for="orig">Оригинальное изображение</label>
+            <input type="radio" name="imgType" id="edit" value="edit" onchange="getCorrectImgType(this.value)">
+            <label for="edit">Измененное изображение</label>
+        </div>
+        <div class="results">
+            <p>Границы расчёта</p>
+            <div id="Borders"></div>
+            <p>Фрактальное число</p>
+            <div id="fractNumber">{{Res}}</div>
+            <p>Процент площади</p>
+            <div id="percentSquare">{{S}}</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+.body {
+    background: RGB(220,220,220);
+}
+
+.box_dragndrop {
+    display: none;
+}
+
+.div_form {
+    display: block;
+    text-align: center;
+}
+
+.box_for_upload_image {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+
+    background-color: RGB(190, 210, 255);
+    width: auto;
+    max-width: 1500px;
+    height: 400px;
+    padding: 10px;
+    border-radius: 50px;
+    align-content: center;
+    outline: 2px solid RGB(0, 0, 0);
+}
+
+.box_for_upload_image.has-advanced-upload {
+    outline: 2px dashed RGB(100, 130, 255);
+    outline-offset: -7px;
+}
+
+.box_for_upload_image.has-advanced-upload .box_dragndrop {
+    display: inline-block;
+}
+
+.box_for_upload_image.is-dragover {
+    background-color: RGB(190, 220, 255);
+}
+
+.box_file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.box_label {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: auto;
+    text-align: center;
+    font-size: 1.25em;
+    color: black;
+    display: inline-block;
+    grid-column: 1/4;
+    grid-row: 2/3;
+}
+
+.box_label:hover {
+    cursor: pointer;
+}
+
+.box_label:hover > .box_choose_file {
+    color: RGB(40, 80, 255);
+}
+
+.box_buttons {
+    grid-column: 2/3;
+    grid-row: 3/4;
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 30px;
+    margin: auto;
+    justify-items: center;
+}
+
+.input-submit {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+    vertical-align:middle;
+    color: RGB(0, 0, 0);
+    text-align: center;
+    border-radius: 20px;
+    background-color: RGB(120,180,255);
+    line-height: 17px;
+    height: 70px;
+    width: fit-content;
+    padding: 7px 15px;
+    box-sizing: border-box;
+    /*border: none;*/
+    margin: 0;
+    transition: background-color 0.2s;
+    border: solid 2px RGB(0,0,0);
+}
+
+.input-submit:hover {
+    background-color: RGB(190,220,255);
+}
+
+.h1_center {
+    margin: auto;
+    text-align: center;
+}

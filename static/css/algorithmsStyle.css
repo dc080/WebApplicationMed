@@ -1,0 +1,56 @@
+.div_form {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 800px 50px 200px;
+    grid-template-rows: 1fr 20px 30px 30px;
+
+    background: RGB(190,210,255);
+    width: auto;
+    padding: 20px;
+    border-radius: 50px;
+    align-content: center;
+    outline: 2px solid RGB(0,0,0);
+}
+
+.img_sample {
+    grid-column: 1/2;
+    grid-row: 1/2;
+
+    max-width: 800px;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+}
+
+.run_algo_button {
+    grid-column: 1/2;
+    grid-row: 4/5;
+}
+
+.borders {
+    grid-column: 1/2;
+    grid-row: 3/4;
+    display: inline-grid;
+    grid-template-columns: repeat(2, 400px);
+    grid-template-rows: 1fr;
+}
+
+.upper_border {
+    grid-column: 1/2;
+    grid-row: 1/2;
+}
+.lower_border {
+    grid-column: 2/3;
+    grid-row: 1/2;
+}
+
+.div_ratio {
+    grid-column: 1/2;
+    grid-row: 2/3;
+}
+
+.results {
+    grid-column: 3/4;
+    grid-row: 1/6;
+}

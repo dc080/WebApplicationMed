@@ -2,7 +2,8 @@ import os
 
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
+
+# from matplotlib import pyplot as plt
 
 class FindFractNumber:
     def resolveFractNumber(self, pic):
@@ -24,12 +25,13 @@ class FindFractNumber:
         image = cv2.bitwise_not(imgContours)
 
         # #############################  Шаг 2: Создание списка масштабов
-        scales = []
-        scales = [int(min(image.shape[1], image.shape[0]) / l) for l in range(3, 100, 2)]
-        scales = list(dict.fromkeys(scales))
-        for i in range(len(scales)):
-            if scales[i] == 1:
-                scales.remove(scales[i])
+        scales = list()
+        for i in range(3, 100, 2):
+            rawNumber = int(min(image.shape[1], image.shape[0]) / i)
+            if rawNumber <= 1:
+                break
+            elif rawNumber not in scales:
+                scales.append(rawNumber)
 
         # ############################## Шаг 3: Нарисовать сетку, закрасить и посчитать кол-во закрашенных ячеек
         N = []
@@ -52,11 +54,11 @@ class FindFractNumber:
         Polyfit = np.polyfit(np.log(scales), np.log(N), 1)
 
         # ############################## Шаг 5: График линейной регрессии
-        #plt.clf()
-        #plt.plot(np.log(scales), np.log(N), 'o', mfc='none')
-        #plt.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
-        #plt.xlabel('log $\\ delta$')
-        #plt.ylabel('log N')
-        #plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png
+        # plt.clf()
+        # plt.plot(np.log(scales), np.log(N), 'o', mfc='none')
+        # plt.plot(np.log(scales), np.polyval(Polyfit, np.log(scales)))
+        # plt.xlabel('log $\\ delta$')
+        # plt.ylabel('log N')
+        # plt.savefig(os.path.join(path, 'graf.png'), dpi=500)  # Создание картинки graf.png
 
         return str(round(-Polyfit[0], 3)) + '\n'  # Упаковка в String и вывод фрактмальная размерность
